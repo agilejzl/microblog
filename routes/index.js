@@ -4,22 +4,22 @@ var User = require('../models/user.js');
 module.exports = function(app) {
   app.get('/', function(req, res) {
     res.render('index', {
-      title: '首頁'
+      title: '首页'
     });
   });
   
   app.get('/reg', checkNotLogin);
   app.get('/reg', function(req, res) {
     res.render('reg', {
-      title: '用戶註冊',
+      title: '用户注册',
     });
   });
   
   app.post('/reg', checkNotLogin);
   app.post('/reg', function(req, res) {
-    //檢驗用戶兩次輸入的口令是否一致
+    //检验用户两次输入的口令是否一致
     if (req.body['password-repeat'] != req.body['password']) {
-      req.flash('error', '兩次輸入的口令不一致');
+      req.flash('error', '两次输入的口令不一致');
       return res.redirect('/reg');
     }
   
@@ -32,22 +32,22 @@ module.exports = function(app) {
       password: password,
     });
     
-    //檢查用戶名是否已經存在
+    //检验用户名是否已经存在
     User.get(newUser.name, function(err, user) {
       if (user)
-        err = 'Username already exists.';
+        err = '用户已经存在';
       if (err) {
         req.flash('error', err);
         return res.redirect('/reg');
       }
-      //如果不存在則新增用戶
+      //如果不存在则新增用户
       newUser.save(function(err) {
         if (err) {
           req.flash('error', err);
           return res.redirect('/reg');
         }
         req.session.user = newUser;
-        req.flash('success', '註冊成功');
+        req.flash('success', '注册成功');
         res.redirect('/');
       });
     });
@@ -56,7 +56,7 @@ module.exports = function(app) {
   app.get('/login', checkNotLogin);
   app.get('/login', function(req, res) {
     res.render('login', {
-      title: '用戶登入',
+      title: '用户登入',
     });
   });
   
@@ -68,15 +68,15 @@ module.exports = function(app) {
     
     User.get(req.body.username, function(err, user) {
       if (!user) {
-        req.flash('error', '用戶不存在');
+        req.flash('error', '用户不存在');
         return res.redirect('/login');
       }
       if (user.password != password) {
-        req.flash('error', '用戶口令錯誤');
+        req.flash('error', '用户口令错误');
         return res.redirect('/login');
       }
       req.session.user = user;
-      req.flash('success', '登入成功');
+      req.flash('success', '登入成功。欢迎您' + user.name + "！");
       res.redirect('/');
     });
   });
