@@ -6,11 +6,9 @@ var express = require('express');
 var routes = require('./routes');
 var settings = require('./settings');
 var MongoStore = require('connect-mongo')(express);
-
 var app = module.exports = express.createServer();
 
 // Configuration
-
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
@@ -28,7 +26,10 @@ app.configure(function(){
 });
 
 app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+  app.use(express.errorHandler({ 
+    dumpExceptions: true, 
+    showStack: true 
+  }));
 });
 
 app.configure('production', function(){
@@ -56,4 +57,4 @@ app.dynamicHelpers({
 });
 
 app.listen(8888);
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+console.log("Express服务器以%s模式监听在%d端口", app.settings.env, app.address().port);

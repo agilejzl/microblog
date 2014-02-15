@@ -8,16 +8,13 @@
     </p>
   </div>
 <% } else { %>
-  <form method="post" action="/post" class="well form-inline center" style="text-align:center;">
-    <input type="text" class="span8">
-    <button type="submit" class="btn btn-success"><i class="icon-comment icon-white"></i> 发言</button>
-  </form>
+  <%- partial('say') %>
 <% } %>
 
 <div class="row">
   <div class="span4">
     <h2>Carbo 说</h2>
-     <p>东风破早梅 向暖一枝开 氷雪无人见 春从天上来</p>
+    <p>东风破早梅 向暖一枝开 氷雪无人见 春从天上来</p>
   </div>
   <div class="span4">
     <h2>BYVoid 说</h2>
@@ -26,7 +23,7 @@
      致力于制作高质量的基于统计预料的简繁转换词库。
      还提供函数库(libopencc)、命令行简繁转换工具、人工校对工具、词典生成程序、
      在线转换服务及图形用户界面。</p>
- </div>
+  </div>
   <div class="span4">
     <h2>佛振 说</h2>
     <p>中州韵输入法引擎 / Rime Input Method Engine 取意历史上通行的中州韵，
