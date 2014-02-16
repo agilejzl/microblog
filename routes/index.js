@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var crypto = require('crypto');
 var User = require('../models/user.js');
 var Post = require('../models/post.js');
@@ -18,16 +19,18 @@ module.exports = function(app) {
   
   app.post('/reg', checkNotLogin);
   app.post('/reg', function(req, res) {
+    //检验用户名时候非空
+    if(_.isEmpty(req.body['username'])) {
+      return redirectWithError(req, res, '用户名不能为空', '/reg');
+    }    
     //检验用户两次输入的口令是否一致
     if (req.body['password-repeat'] != req.body['password']) {
-      req.flash('error', '两次输入的口令不一致');
-      return res.redirect('/reg');
+      return redirectWithError(req, res, '两次输入的口令不一致', '/reg');
     }
   
     //生成口令的散列值
     var md5 = crypto.createHash('md5');
     var password = md5.update(req.body.password).digest('base64');
-    
     var newUser = new User({
       name: req.body.username,
       password: password,
@@ -38,18 +41,15 @@ module.exports = function(app) {
       if (user)
         err = '用户已经存在';
       if (err) {
-        req.flash('error', err);
-        return res.redirect('/reg');
+        return redirectWithError(req, res, err, '/reg');
       }
       //如果不存在则新增用户
       newUser.save(function(err) {
         if (err) {
-          req.flash('error', err);
-          return res.redirect('/reg');
+          return redirectWithError(req, res, err, '/reg');
         }
         req.session.user = newUser;
-        req.flash('success', '注册成功');
-        res.redirect('/');
+        redirectWithSuccess(req, res, '注册成功', '/');
       });
     });
   });
@@ -69,24 +69,21 @@ module.exports = function(app) {
     
     User.get(req.body.username, function(err, user) {
       if (!user) {
-        req.flash('error', '用户不存在');
-        return res.redirect('/login');
+        return redirectWithError(req, res, '用户不存在', '/login');
       }
       if (user.password != password) {
-        req.flash('error', '用户口令错误');
-        return res.redirect('/login');
+        return redirectWithError(req, res, '用户口令错误', '/login');
       }
       req.session.user = user;
-      req.flash('success', '登入成功。欢迎您' + user.name + "！");
-      res.redirect('/');
+      var message = '登入成功。欢迎您' + user.name + "！";
+      redirectWithSuccess(req, res, message, '');
     });
   });
   
   app.get('/logout', checkLogin);
   app.get('/logout', function(req, res) {
     req.session.user = null;
-    req.flash('success', '登出成功');
-    res.redirect('/');
+    redirectWithSuccess(req, res, '登出成功', '/');
   });
 
   app.post('/post', checkLogin); 
@@ -95,24 +92,21 @@ module.exports = function(app) {
     var post = new Post(currentUser.name, req.body.post); 
     post.save(function(err) {
       if (err) {
-        req.flash('error', err); 
-        return res.redirect('/');
+        return redirectWithError(req, res, err, '/');
       }
-      req.flash('success', '发表成功'); 
-      res.redirect('/u/' + currentUser.name);
+      redirectWithSuccess(req, res, '发表成功', '/u/' + currentUser.name);
     }); 
   });
 
   app.get('/u/:user', function(req, res) { 
+    // \/user\/([^\/]+)\/?
     User.get(req.params.user, function(err, user) {
       if (!user) {
-        req.flash('error', '用户不存在'); 
-        return res.redirect('/');
+        return redirectWithError(req, res, '用户不存在', '/');
       }
       Post.get(user.name, function(err, posts) {
         if (err) { 
-          req.flash('error', err); 
-          return res.redirect('/');
+          return redirectWithError(req, res, err, '/');
         }
         res.render('user', {
           title: user.name,
@@ -135,18 +129,26 @@ module.exports = function(app) {
   });
 };
 
+function redirectWithSuccess(req, res, message, url) {
+  req.flash('success', message);
+  return res.redirect(url);
+}
+
+function redirectWithError(req, res, message, url) {
+  req.flash('error', message);
+  return res.redirect(url);
+}
+
 function checkLogin(req, res, next) {
   if (!req.session.user) {
-    req.flash('error', '未登入');
-    return res.redirect('/login');
+    return redirectWithError(req, res, '未登入', '/login');
   }
   next();
 }
 
 function checkNotLogin(req, res, next) {
   if (req.session.user) {
-    req.flash('error', '已登入');
-    return res.redirect('/');
+    return redirectWithError(req, res, '已登入', '/');
   }
   next();
 }
