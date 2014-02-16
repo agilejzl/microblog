@@ -64,7 +64,7 @@ Post.get = function get(username, callback) {
       // 封装 posts 为 Post 对象
       var posts = []; 
       docs.forEach(function(doc, index) {
-        var post = new Post(doc.user, doc.post, doc.time);
+        var post = new Post(doc.user, doc.post, new Date(doc.time).format("yyyy-MM-dd hh:mm"));
         posts.push(post);
       });
       callback(null, posts); });

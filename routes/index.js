@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var crypto = require('crypto');
+var Tool = require('../models/tool.js');
 var User = require('../models/user.js');
 var Post = require('../models/post.js');
 
