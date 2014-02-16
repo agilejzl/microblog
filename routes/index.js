@@ -4,9 +4,15 @@ var User = require('../models/user.js');
 var Post = require('../models/post.js');
 
 module.exports = function(app) {
-  app.get('/', function(req, res) {
-    res.render('index', {
-      title: '首页'
+  app.get('/', function(req, res) { 
+    Post.get(null, function(err, posts) {
+      if (err) {
+        posts = [];
+      }
+      res.render('index', {
+        title: '首页',
+        posts: posts,
+      });
     });
   });
   
@@ -23,12 +29,12 @@ module.exports = function(app) {
     if(_.isEmpty(req.body['username'])) {
       return redirectWithError(req, res, '用户名不能为空', '/reg');
     }    
-    //检验用户两次输入的口令是否一致
+    //检验用户两次输入的密码是否一致
     if (req.body['password-repeat'] != req.body['password']) {
-      return redirectWithError(req, res, '两次输入的口令不一致', '/reg');
+      return redirectWithError(req, res, '两次输入的密码不一致', '/reg');
     }
   
-    //生成口令的散列值
+    //生成密码的散列值
     var md5 = crypto.createHash('md5');
     var password = md5.update(req.body.password).digest('base64');
     var newUser = new User({
@@ -63,7 +69,7 @@ module.exports = function(app) {
   
   app.post('/login', checkNotLogin);
   app.post('/login', function(req, res) {
-    //生成口令的散列值
+    //生成密码的散列值
     var md5 = crypto.createHash('md5');
     var password = md5.update(req.body.password).digest('base64');
     
@@ -72,7 +78,7 @@ module.exports = function(app) {
         return redirectWithError(req, res, '用户不存在', '/login');
       }
       if (user.password != password) {
-        return redirectWithError(req, res, '用户口令错误', '/login');
+        return redirectWithError(req, res, '用户密码错误', '/login');
       }
       req.session.user = user;
       var message = '登入成功。欢迎您' + user.name + "！";
@@ -113,18 +119,6 @@ module.exports = function(app) {
           posts: posts,
         });
       }); 
-    });
-  });
-
-  app.get('/', function(req, res) { 
-    Post.get(null, function(err, posts) {
-      if (err) {
-        posts = [];
-      }
-      res.render('index', {
-        title: '首页',
-        posts: posts,
-      });
     });
   });
 };
