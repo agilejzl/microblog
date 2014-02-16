@@ -26,11 +26,20 @@ module.exports = function(app) {
   app.post('/reg', checkNotLogin);
   app.post('/reg', function(req, res) {
     //检验用户名时候非空
-    if(_.isEmpty(req.body['username'])) {
-      return redirectWithError(req, res, '用户名不能为空', '/reg');
-    }    
+    var username = req.body['username'].trim();
+    if(!/^([0-9]|[a-z]|[A-Z]){2,}$/.test(username)) {
+      return redirectWithError(req, res, '用户名必须为2个以上字符', '/reg');
+    }
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if(!re.test(req.body['email'])) {
+      return redirectWithError(req, res, '邮箱格式不正确', '/reg');
+    }
+    var password = req.body['password'].trim();
+    if(!/^([0-9]|[a-z]|[A-Z]){2,}$/.test(password)) {
+      return redirectWithError(req, res, '密码必须为2个以上字符', '/reg');
+    }
     //检验用户两次输入的密码是否一致
-    if (req.body['password-repeat'] != req.body['password']) {
+    if (req.body['password-repeat'].trim() != password) {
       return redirectWithError(req, res, '两次输入的密码不一致', '/reg');
     }
   
@@ -39,6 +48,7 @@ module.exports = function(app) {
     var password = md5.update(req.body.password).digest('base64');
     var newUser = new User({
       name: req.body.username,
+      email: req.body.email,
       password: password,
     });
     
@@ -55,7 +65,7 @@ module.exports = function(app) {
           return redirectWithError(req, res, err, '/reg');
         }
         req.session.user = newUser;
-        redirectWithSuccess(req, res, '注册成功', '/');
+        redirectWithSuccess(req, res, '注册成功，登录之后畅享微博', '/');
       });
     });
   });

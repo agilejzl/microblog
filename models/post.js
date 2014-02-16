@@ -56,7 +56,7 @@ Post.get = function get(username, callback) {
       query.user = username;
     }
     collection.find(query).sort({time: -1}).toArray(function(err, docs) {
-      console.log("posts --> ", docs);
+      // console.log("posts --> ", docs);
       mongodb.close();
       if (err) {
         callback(err, null); 

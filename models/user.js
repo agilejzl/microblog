@@ -1,8 +1,10 @@
+var md5 = require('MD5');
 var mongodb = require('./db');
 
 function User(user) {
   this.name = user.name;
   this.password = user.password;
+  this.email = user.email;
 };
 module.exports = User;
 
@@ -11,6 +13,7 @@ User.prototype.save = function save(callback) {
   var user = {
     name: this.name,
     password: this.password,
+    email: this.email,
   };
   mongodb.open(function(err, db) {
     if (err) {
@@ -50,6 +53,9 @@ User.get = function get(username, callback) {
         if (doc) {
           // 封装为 User 对象
           var user = new User(doc);
+          var photo_url = "https://secure.gravatar.com/avatar/" + md5(user.email) + "?r=x";
+          user.photo_url = photo_url;
+          console.log("photo_url --> ", user.photo_url);
           callback(err, user);
         } else {
           callback(err, null);
