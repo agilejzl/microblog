@@ -5,6 +5,7 @@ function User(user) {
   this.name = user.name;
   this.password = user.password;
   this.email = user.email;
+  this.is_admin = user.is_admin;
 };
 module.exports = User;
 
@@ -14,6 +15,7 @@ User.prototype.save = function save(callback) {
     name: this.name,
     password: this.password,
     email: this.email,
+    is_admin: this.is_admin
   };
   mongodb.open(function(err, db) {
     if (err) {
@@ -55,7 +57,7 @@ User.get = function get(username, callback) {
           var user = new User(doc);
           var photo_url = "https://secure.gravatar.com/avatar/" + md5(user.email) + "?r=x";
           user.photo_url = photo_url;
-          console.log("photo_url --> ", user.photo_url);
+          // console.log("photo_url --> ", user.photo_url);
           callback(err, user);
         } else {
           callback(err, null);

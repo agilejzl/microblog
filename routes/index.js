@@ -16,6 +16,20 @@ module.exports = function(app) {
       });
     });
   });
+
+  app.get('/admin', checkAdminLogin);
+  app.get('/admin', function(req, res) {
+    currentUser = req.session.user;
+    Post.get(currentUser.username, function(err, posts) {
+      if (err) {
+        posts = [];
+      }
+      res.render('admin/index', {
+        title: '微博管理首页',
+        posts: posts,
+      });
+    });
+  });
   
   app.get('/reg', checkNotLogin);
   app.get('/reg', function(req, res) {
@@ -51,6 +65,7 @@ module.exports = function(app) {
       name: req.body.username,
       email: req.body.email,
       password: password,
+      is_admin: false
     });
     
     //检验用户名是否已经存在
@@ -92,8 +107,13 @@ module.exports = function(app) {
         return redirectWithError(req, res, '用户密码错误', '/login');
       }
       req.session.user = user;
-      var message = '登入成功。欢迎您' + user.name + "！";
-      redirectWithSuccess(req, res, message, '');
+      if (user.is_admin) {
+        var message = '登入成功。欢迎管理员' + user.name + "！";
+        redirectWithSuccess(req, res, message, '/admin');
+      } else {
+        var message = '登入成功。欢迎您' + user.name + "！";
+        redirectWithSuccess(req, res, message, '');
+      }
     });
   });
   
@@ -105,6 +125,9 @@ module.exports = function(app) {
 
   app.post('/post', checkLogin); 
   app.post('/post', function(req, res) {
+    if (_.isEmpty(req.body.post.trim())) {
+      return redirectWithError(req, res, '发布内容不能为空', '/');
+    }
     var currentUser = req.session.user;
     var post = new Post(currentUser.name, req.body.post); 
     post.save(function(err) {
@@ -132,6 +155,7 @@ module.exports = function(app) {
       }); 
     });
   });
+  
 };
 
 function redirectWithSuccess(req, res, message, url) {
@@ -146,14 +170,22 @@ function redirectWithError(req, res, message, url) {
 
 function checkLogin(req, res, next) {
   if (!req.session.user) {
-    return redirectWithError(req, res, '未登入', '/login');
+    return redirectWithError(req, res, '未登录为普通用户', '/login');
   }
   next();
 }
 
 function checkNotLogin(req, res, next) {
   if (req.session.user) {
-    return redirectWithError(req, res, '已登入', '/');
+    return redirectWithError(req, res, '已登录为普通用户', '/');
+  }
+  next();
+}
+
+function checkAdminLogin(req, res, next) {
+  var user = req.session.user;
+  if (!(user && user.is_admin)) {
+    return redirectWithError(req, res, '未登录为管理员', '/login');
   }
   next();
 }
