@@ -5,7 +5,8 @@ var User = require('../models/user.js');
 var Post = require('../models/post.js');
 
 module.exports = function(app) {
-  app.get('/', function(req, res) { 
+  app.get('/', function(req, res) {
+    // throw new Error('An error for test purposes.');
     Post.get(null, function(err, posts) {
       if (err) {
         posts = [];

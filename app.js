@@ -1,7 +1,9 @@
 /**
  * Module dependencies.
  */
-
+var fs = require('fs');
+var accessLogfile = fs.createWriteStream('access.log', {flags: 'a'}); 
+var errorLogfile = fs.createWriteStream('error.log', {flags: 'a'});
 var express = require('express');
 var routes = require('./routes');
 var settings = require('./settings');
@@ -10,6 +12,7 @@ var app = module.exports = express.createServer();
 
 // Configuration
 app.configure(function(){
+  app.use(express.logger({stream: accessLogfile}));
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.bodyParser());
@@ -34,6 +37,11 @@ app.configure('development', function(){
 
 app.configure('production', function(){
   app.use(express.errorHandler());
+  app.error(function (err, req, res, next) {
+    var meta = '[' + new Date() + '] ' + req.url + '\n';
+    errorLogfile.write(meta + err.stack + '\n');
+    next(); 
+  });
 });
 
 app.dynamicHelpers({
@@ -56,5 +64,8 @@ app.dynamicHelpers({
   },
 });
 
-app.listen(8888);
-console.log("Express服务器以%s模式监听在%d端口", app.settings.env, app.address().port);
+if (!module.parent) {
+  app.listen(8888);
+  console.log("Express服务器以%s模式监听在%d端口", app.settings.env, app.address().port);
+}
+
