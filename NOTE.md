@@ -64,7 +64,7 @@ Node.js 是根据实际文 件名缓存的,而不是 require() 提供的参数�
 解决控制流难题：async、streamlinejs和jscex、eventproxy。
 node app.js几个重大缺陷：
   不支持故障恢复、没有日志、无法利用多核提高性能、独占端口、需要手动启动
-Node.js更善于处理那些逻辑简单但访问频繁的任务。
+Node.js 更善于处理那些逻辑简单但访问频繁的任务。
 Node.js 不适合做的事情：
   1. 计算密集型的程序
   2. 单用户多任务型应用

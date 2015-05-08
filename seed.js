@@ -38,6 +38,6 @@ _.each(hash_users, function(hash_user, index, list){
         }
       });
     }
-  });  
+  });
 // }
 });
