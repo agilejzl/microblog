@@ -1,13 +1,13 @@
 <% if (!user) { %>
-  <div class="hero-unit">
+    <div class="hero-unit">
     <h1>欢迎来到 微博</h1>
     <p>微博 是一个基于 Node.js 的微博系统。</p>
     <p>
-      <a class="btn btn-primary btn-large" href="/login">登录</a>
-      <a class="btn btn-large" href="/reg">立即注册</a>
+        <a class="btn btn-primary btn-large" href="/login">登录</a>
+        <a class="btn btn-large" href="/reg">立即注册</a>
     </p>
-  </div>
+    </div>
 <% } else { %>
-  <%- partial('say') %>
+    <%- partial('say') %>
 <% } %>
 <%- partial('posts') %>

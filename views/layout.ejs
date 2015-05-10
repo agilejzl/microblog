@@ -1,75 +1,75 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-  <head>
-    <title><%= title %> - 微博</title>
-    <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-    </style>
-    <link href="stylesheets/bootstrap-responsive.css" rel="stylesheet">
-  </head>
-  <body>
-  
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="/">微博</a>
-          <div class="nav-collapse">
-            <ul class="nav">
-              <li class="active"><a href="/">首页</a></li>
-              <li><a href="/admin">管理</a></li>
-            </ul>
-            <ul class="nav pull-right">
-              <% if (!user) { %>
-                <li><a href="/login">登入</a></li>
-                <li><a href="/reg">注册</a></li>
-              <% } else { %>
-                <li><a href="/logout">登出</a></li>
-                <li>
-                  <a href="javascript: void(0);"><%= user.name %></a>
-                </li>
-                <li>
-                  <img src="<%= user.photo_url %>&s=40">
-                </li>
-              <% } %>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+    <head>
+        <title><%= title %> - 微博</title>
+        <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
+        <style type="text/css">
+            body {
+                padding-top: 60px;
+                padding-bottom: 40px;
+            }
+        </style>
+        <link href="stylesheets/bootstrap-responsive.css" rel="stylesheet">
+    </head>
+    <body>
 
-    <div id="container" class="container">
-      <% if (success) { %>
-        <div class="alert alert-success">
-          <%= success %>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="/">微博</a>
+                    <div class="nav-collapse">
+                        <ul class="nav">
+                            <li class="active"><a href="/">首页</a></li>
+                            <li><a href="/admin">管理</a></li>
+                        </ul>
+                        <ul class="nav pull-right">
+                            <% if (!user) { %>
+                                <li><a href="/login">登入</a></li>
+                                <li><a href="/reg">注册</a></li>
+                            <% } else { %>
+                                <li><a href="/logout">登出</a></li>
+                                <li>
+                                    <a href="javascript: void(0);"><%= user.name %></a>
+                                </li>
+                                <li>
+                                    <img src="<%= user.photo_url %>&s=40">
+                                </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-      <% } %>
-      <% if (error) { %>
-        <div class="alert alert-error">
-          <%= error %>
+
+        <div id="container" class="container">
+            <% if (success) { %>
+                <div class="alert alert-success">
+                    <%= success %>
+                </div>
+            <% } %>
+            <% if (error) { %>
+                <div class="alert alert-error">
+                    <%= error %>
+                </div>
+            <% } %>
+            <%- body %>
+            <hr />
+            <footer class="text-center">
+                <p>
+                    ©2014 微博
+                    <a href="https://github.com/agilejzl" target="_blank">Teddy Jiang</a>
+                </p>
+            </footer>
         </div>
-      <% } %>
-      <%- body %>
-      <hr />
-      <footer class="text-center">
-        <p>
-          ©2014 微博
-          <a href="https://github.com/agilejzl" target="_blank">Teddy Jiang</a>
-        </p>
-      </footer>
-    </div>
-  </body>
-  <script src="/javascripts/jquery.js"></script>
-  <script src="/javascripts/bootstrap.js"></script>
-  <script src="/javascripts/underscore.js"></script>
-  <script src="/javascripts/backbone.js"></script>
+    </body>
+    <script src="/javascripts/jquery.js"></script>
+    <script src="/javascripts/bootstrap.js"></script>
+    <script src="/javascripts/underscore.js"></script>
+    <script src="/javascripts/backbone.js"></script>
 </html>
