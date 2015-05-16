@@ -9,7 +9,7 @@ For mac:
 ```bash  
 brew install nodejs
 
-git@github.com:agilejzl/microblog.git
+git clone git@github.com:agilejzl/microblog.git
 
 cd microblog  
 
